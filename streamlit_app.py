@@ -40,8 +40,8 @@ index.add(np.array(embeddings))
 # =====================
 # 3. Streamlit UI Setup
 # =====================
-st.set_page_config(page_title="JacobGPT", page_icon="🤖")
-st.title("🤖 JacobGPT")
+st.set_page_config(page_title="JacobGPT – Bewerbungschatbot", page_icon="🤖")
+st.title("🤖 JacobGPT – Bewerbungschatbot")
 
 # Initialisiere Session-State für den Chat-Verlauf
 if "chat_history" not in st.session_state:
