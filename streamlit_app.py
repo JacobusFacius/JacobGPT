@@ -3,16 +3,13 @@ from sentence_transformers import SentenceTransformer
 import faiss
 import numpy as np
 from groq import Groq
-from dotenv import load_dotenv
-import os
 
 # =====================
 # 1. Vorbereitung
 # =====================
 
-# API-Key aus .env laden
-load_dotenv()
-groq_api_key = os.getenv("GROQ_API_KEY")
+# API-Key aus Streamlit secrets laden
+groq_api_key = st.secrets["GROQ_API_KEY"]
 
 # Groq-Client initialisieren
 client = Groq(api_key=groq_api_key)
