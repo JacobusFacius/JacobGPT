@@ -16,7 +16,10 @@ client = Groq(api_key=groq_api_key)
 
 # Text Chunks (deine Infos)
 text_chunks = [
-    "Jacob Facius ist 26 Jahre alt und studiert Wirtschaftsinformatik im Master.",
+    "Jacob Facius ist 26 Jahre alt.",
+    "Er ist 26 Jahre alt.",
+    "Jacob Facius studiert Wirtschaftsinformatik im Master."
+    "Er studiert Wirtschaftsinformatik im Master."
     "Er arbeitet bei Duagon im Bereich Business Intelligence.",
     "Er kennt sich mit Power BI, Python, R, SQL und Machine Learning aus.",
     "Er hat einen Chatbot für interne Dokumente gebaut.",
@@ -40,8 +43,8 @@ index.add(np.array(embeddings))
 # =====================
 # 3. Streamlit UI Setup
 # =====================
-st.set_page_config(page_title="JacobGPT – Bewerbungschatbot", page_icon="🤖")
-st.title("🤖 JacobGPT – Bewerbungschatbot")
+st.set_page_config(page_title="JacobGPT", page_icon="🤖")
+st.title("🤖 JacobGPT")
 
 # Initialisiere Session-State für den Chat-Verlauf
 if "chat_history" not in st.session_state:
@@ -63,7 +66,7 @@ if user_input:
     best_chunk = text_chunks[I[0][0]]
 
     # Prompt für Groq vorbereiten
-    prompt = f"Beantworte folgende Frage basierend auf diesem Textausschnitt:\n\nText: {best_chunk}\n\nFrage: {user_input}\nAntwort:"
+    prompt = f"Beantworte folgende Frage basierend auf diesem Textausschnitt über Jacob:\n\nText: {best_chunk}\n\nFrage: {user_input}\nAntwort:"
     MODEL_NAME = "llama3-70b-8192"
 
     try:
