@@ -1,141 +1,65 @@
-# Data manipulation
-import numpy as np
-import datetime as dt
-import pandas as pd
-import geopandas as gpd
-
-# Database and file handling
-import os
-
-# Data visualization
-import plotly.express as px
-import plotly.graph_objects as go
 import streamlit as st
-import seaborn as sns
-import matplotlib.pyplot as plt
-import pydeck as pdk
+from langchain.embeddings import HuggingFaceEmbeddings
+from langchain.vectorstores import FAISS
+from langchain.text_splitter import CharacterTextSplitter
+from langchain.llms import Ollama
+from langchain.chains import RetrievalQA
+from langchain.schema import Document
 
-import ollama
+# ==============================
+# 1. Textbasis direkt im Code
+# ==============================
 
-path_cda = '\\CuriosityDataAnalytics'
-path_wd = path_cda + '\\wd'
-path_data = path_wd + '\\data'
+text = """
+Sehr geehrte Damen und Herren,
 
-# App config
-#----------------------------------------------------------------------------------------------------------------------------------#
-# Page config
-st.set_page_config(
-    layout="wide",
-    initial_sidebar_state="expanded"
-)
-st.markdown(
-    """
-    <style>
-    .element-container {
-        margin-top: -2x;
-        margin-bottom: -2px;
-        margin-left: -2px;
-        margin-right: -2px;
-    }
-    img[data-testid="stLogo"] {
-                height: 6rem;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
+mein Name ist Jacob Facius, ich bin 26 Jahre alt und befinde mich im letzten Semester meines Masterstudiums der Wirtschaftsinformatik. Neben meinem Studium arbeite ich als Werkstudent im Bereich Business Intelligence bei Duagon. 
 
+Ich bin ein aufgeschlossener, kommunikativer Mensch, der gerne Verantwortung übernimmt und seine kreativen und lösungsorientierten Vorschläge gerne ins Team einbringt. Ein freundlicher und respektvoller Umgang mit meinen Kollegen und Mitmenschen ist für mich eine Selbstverständlichkeit. Gerne lasse ich mein Umfeld an meiner Motivation teilhaben und begeistere mich und andere für jede Herausforderung. 
 
-# App title
-st.title("How to Create Your Own Chatbot w/ Ollama")
-st.divider()
+In meiner beruflichen Praxis konnte ich bereits umfassende Kompetenzen in der Beschaffung, Analyse und Visualisierung von Daten aufbauen. Ich verfüge über sehr gute Kenntnisse in Power BI, Python, R und SQL. In meiner aktuellen Werkstudententätigkeit war ich maßgeblich an der Konzeption und Umsetzung der internen Reporting-Landschaft beteiligt – von der Anforderungsaufnahme mit unterschiedlichen Stakeholdern über die Datenbeschaffung und Aufbereitung bis hin zur Visualisierung in Power BI. 
+Darüber hinaus beschäftige ich mich intensiv mit Künstlicher Intelligenz und Machine Learning. In meiner derzeitigen Position habe ich u.a. einen unternehmensinternen Chatbot erstellt, der Fragen zu firmenbezogenen Dokumenten beantwortet. Ergänzend dazu halte ich englischsprachige Schulungen zur verantwortungsvollen Nutzung von KI-Tools im Unternehmen. 
+Meine Leidenschaft für diese Themen zeigt sich auch in meiner akademischen Laufbahn: Das Modul Advanced Data Visualization habe ich mit der Note 1,0 abgeschlossen. Meine Masterarbeit schreibe ich gerade über das Thema “Determinants of Sharing Sensitive Data with AI Tools in the Workplace: A Privacy Calculus Perspective” und ich habe im Rahmen eines internationalen Projekts in Kooperation mit dem MIT ein KI-Modell entwickelt, das Emotionen bei Pferden erkennt. Weitere Informationen zu mir und meinen Fähigkeiten finden Sie auf meiner Webseite unter: jacob-facius.de
 
-with st.sidebar:
-    st.logo(path_cda + '\\logo.png', size='large')
-    st.empty()
+Im November 2025 werde ich mein Masterstudium abschließen und sehe nun den richtigen Zeitpunkt gekommen, um meine Fähigkeiten in einem neuen Arbeitsumfeld unter Beweis zu stellen. Mit meinen Qualifikationen, analytischen Fähigkeiten, meiner offenen Art und meiner selbstständigen Arbeitsweise bin ich überzeugt, dass ich einen wertvollen Beitrag zu Ihrem Team leisten werde. 
 
-if 'messages' not in st.session_state:
-    st.session_state.messages = []
+Gerne stehe ich Ihnen jederzeit zur Verfügung und würde mich sehr darüber freuen, Sie in einem persönlichen Gespräch kennenzulernen und mehr über die Position und Ihr Unternehmen zu erfahren.
 
-st.subheader(':one: Import libraries')
-st.code('''
-import streamlit as st
-import ollama
-''')
+Ich freue mich auf Ihre Rückmeldung.
 
-st.subheader(':two: Create chat history')
-st.code('''
-if 'messages' not in st.session_state:
-    st.session_state.messages = []
+Mit freundlichen Grüßen,
+Jacob Facius
+"""
 
-for message in st.session_state.messages:
-    with st.chat_message(message["role"]):
-        st.markdown(message["content"])
-''')
+# ==============================
+# 2. Verarbeitung & Vektoren
+# ==============================
 
-st.subheader(':three: Create chat input')
-st.code('''
-if prompt := st.chat_input("What can I help with?"):
+# Text in Dokumentobjekte konvertieren
+doc = Document(page_content=text)
+text_splitter = CharacterTextSplitter(chunk_size=500, chunk_overlap=50)
+docs = text_splitter.split_documents([doc])
 
-    # User
-    st.session_state.messages.append({"role": "user", "content": prompt})
+# Embeddings laden
+embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
+db = FAISS.from_documents(docs, embeddings)
+retriever = db.as_retriever()
 
-    with st.chat_message("user"):
-        st.write(prompt)
+# Mistral via Ollama (lokal) verwenden
+llm = Ollama(model="mistral")
+qa_chain = RetrievalQA.from_chain_type(llm=llm, retriever=retriever)
 
-    # Model
-    with st.chat_message("assistant"):
-        response = ollama.chat(model='gemma2',
-                               messages=[
-                                    {"role": m["role"], "content": m["content"]}
-                                    for m in st.session_state.messages
-                                ],
-                                stream=True)
-        
-        response_content = ''
-        def catch_response(response):
-            global response_content
-            for chunk in response:
-                response_content += chunk['message']['content']
-                yield chunk['message']['content']
+# ==============================
+# 3. Streamlit App
+# ==============================
 
-        stream = catch_response(response)
-        st.write_stream(stream)
+st.set_page_config(page_title="Jacob Chatbot", page_icon="🤖")
+st.title("🤖 Chatbot zu Jacob Facius")
+st.write("Stelle Fragen basierend auf dem Bewerbungstext.")
 
-        st.session_state.messages.append({"role": "assistant", "content": response_content})
-''')
+query = st.text_input("Deine Frage hier eingeben:")
 
-st.subheader(':four: Chatbot')
-
-for message in st.session_state.messages:
-    with st.chat_message(message["role"]):
-        st.markdown(message["content"])
-
-if prompt := st.chat_input("What can I help with?"):
-
-    # User
-    st.session_state.messages.append({"role": "user", "content": prompt})
-
-    with st.chat_message("user"):
-        st.markdown(prompt)
-
-    # Model
-    with st.chat_message("assistant"):
-        response = ollama.chat(model='gemma2',
-                               messages=[
-                                    {"role": m["role"], "content": m["content"]}
-                                    for m in st.session_state.messages
-                                ],
-                                stream=True)
-        
-        stream_content = ''
-        def catch_stream(response):
-            global stream_content
-            for chunk in response:
-                stream_content += chunk['message']['content']
-                yield chunk['message']['content']
-
-        stream = catch_stream(response)
-        st.write_stream(stream)
-
-        st.session_state.messages.append({"role": "assistant", "content": stream_content})
+if query:
+    with st.spinner("Antwort wird generiert..."):
+        result = qa_chain.run(query)
+        st.markdown(f"**Antwort:** {result}")
