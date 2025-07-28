@@ -1,72 +1,58 @@
+
 import streamlit as st
-from langchain.embeddings import HuggingFaceEmbeddings
-from langchain.vectorstores import FAISS
-from langchain.text_splitter import CharacterTextSplitter
-from langchain.chains import RetrievalQA
-from langchain.schema import Document
-from langchain_groq import ChatGroq
+from sentence_transformers import SentenceTransformer
+import faiss
+import numpy as np
+import subprocess
+import json
 
-# ==============================
-# 1. Bewerbungstext als Input
-# ==============================
+# =====================
+# 1. Text vorbereiten
+# =====================
+text_chunks = [
+    "Jacob Facius ist 26 Jahre alt und studiert Wirtschaftsinformatik im Master.",
+    "Er arbeitet bei Duagon im Bereich Business Intelligence.",
+    "Er kennt sich mit Power BI, Python, R, SQL und Machine Learning aus.",
+    "Er hat einen Chatbot für interne Dokumente gebaut.",
+    "Seine Masterarbeit behandelt Datenschutz bei KI im Unternehmen.",
+    "Er entwickelte mit dem MIT ein KI-Modell zur Emotionserkennung bei Pferden.",
+    "Er schließt sein Studium im November 2025 ab.",
+    "Weitere Infos unter jacob-facius.de."
+]
 
-text = """
-Sehr geehrte Damen und Herren,
+# =====================
+# 2. Embeddings
+# =====================
+model = SentenceTransformer("all-MiniLM-L6-v2")
+embeddings = model.encode(text_chunks)
 
-mein Name ist Jacob Facius, ich bin 26 Jahre alt und befinde mich im letzten Semester meines Masterstudiums der Wirtschaftsinformatik. Neben meinem Studium arbeite ich als Werkstudent im Bereich Business Intelligence bei Duagon. 
+# FAISS Index
+dimension = embeddings.shape[1]
+index = faiss.IndexFlatL2(dimension)
+index.add(np.array(embeddings))
 
-Ich bin ein aufgeschlossener, kommunikativer Mensch, der gerne Verantwortung übernimmt und seine kreativen und lösungsorientierten Vorschläge gerne ins Team einbringt. Ein freundlicher und respektvoller Umgang mit meinen Kollegen und Mitmenschen ist für mich eine Selbstverständlichkeit. Gerne lasse ich mein Umfeld an meiner Motivation teilhaben und begeistere mich und andere für jede Herausforderung. 
-
-In meiner beruflichen Praxis konnte ich bereits umfassende Kompetenzen in der Beschaffung, Analyse und Visualisierung von Daten aufbauen. Ich verfüge über sehr gute Kenntnisse in Power BI, Python, R und SQL. In meiner aktuellen Werkstudententätigkeit war ich maßgeblich an der Konzeption und Umsetzung der internen Reporting-Landschaft beteiligt – von der Anforderungsaufnahme mit unterschiedlichen Stakeholdern über die Datenbeschaffung und Aufbereitung bis hin zur Visualisierung in Power BI. 
-Darüber hinaus beschäftige ich mich intensiv mit Künstlicher Intelligenz und Machine Learning. In meiner derzeitigen Position habe ich u.a. einen unternehmensinternen Chatbot erstellt, der Fragen zu firmenbezogenen Dokumenten beantwortet. Ergänzend dazu halte ich englischsprachige Schulungen zur verantwortungsvollen Nutzung von KI-Tools im Unternehmen. 
-Meine Leidenschaft für diese Themen zeigt sich auch in meiner akademischen Laufbahn: Das Modul Advanced Data Visualization habe ich mit der Note 1,0 abgeschlossen. Meine Masterarbeit schreibe ich gerade über das Thema “Determinants of Sharing Sensitive Data with AI Tools in the Workplace: A Privacy Calculus Perspective” und ich habe im Rahmen eines internationalen Projekts in Kooperation mit dem MIT ein KI-Modell entwickelt, das Emotionen bei Pferden erkennt. Weitere Informationen zu mir und meinen Fähigkeiten finden Sie auf meiner Webseite unter: jacob-facius.de
-
-Im November 2025 werde ich mein Masterstudium abschließen und sehe nun den richtigen Zeitpunkt gekommen, um meine Fähigkeiten in einem neuen Arbeitsumfeld unter Beweis zu stellen. Mit meinen Qualifikationen, analytischen Fähigkeiten, meiner offenen Art und meiner selbstständigen Arbeitsweise bin ich überzeugt, dass ich einen wertvollen Beitrag zu Ihrem Team leisten werde. 
-
-Gerne stehe ich Ihnen jederzeit zur Verfügung und würde mich sehr darüber freuen, Sie in einem persönlichen Gespräch kennenzulernen und mehr über die Position und Ihr Unternehmen zu erfahren.
-
-Ich freue mich auf Ihre Rückmeldung.
-
-Mit freundlichen Grüßen,  
-Jacob Facius
-"""
-
-# ==============================
-# 2. Verarbeitung & Vektoren
-# ==============================
-
-# Text vorbereiten
-doc = Document(page_content=text)
-text_splitter = CharacterTextSplitter(chunk_size=500, chunk_overlap=50)
-docs = text_splitter.split_documents([doc])
-
-# Embeddings + FAISS
-embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
-db = FAISS.from_documents(docs, embeddings)
-retriever = db.as_retriever()
-
-# ==============================
-# 3. LLM über Groq
-# ==============================
-
-llm = ChatGroq(
-    api_key="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",
-    model_name="mixtral-8x7b-32768"
-)
-
-qa_chain = RetrievalQA.from_chain_type(llm=llm, retriever=retriever)
-
-# ==============================
-# 4. Streamlit App
-# ==============================
-
-st.set_page_config(page_title="Jacob Chatbot", page_icon="🤖")
-st.title("🤖 Chatbot zu Jacob Facius")
-st.write("Stelle Fragen basierend auf dem Bewerbungstext.")
-
-query = st.text_input("Deine Frage hier eingeben:")
+# =====================
+# 3. Suche & Chat
+# =====================
+st.title("🤖 JacobGPT – Bewerbungschatbot")
+query = st.text_input("Was möchtest du über Jacob wissen?")
 
 if query:
-    with st.spinner("Antwort wird generiert..."):
-        result = qa_chain.run(query)
-        st.markdown(f"**Antwort:** {result}")
+    query_embedding = model.encode([query])
+    D, I = index.search(np.array(query_embedding), k=1)
+    best_chunk = text_chunks[I[0][0]]
+
+    # Optional: Wenn Mistral über Ollama läuft
+    try:
+        prompt = f"Beantworte folgende Frage basierend auf diesem Textausschnitt:\n\nText: {best_chunk}\n\nFrage: {query}\nAntwort:"
+        response = subprocess.run(
+            ["ollama", "run", "mistral", prompt],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True
+        )
+        answer = response.stdout.strip()
+    except Exception:
+        answer = f"(Kein Mistral gefunden – Rückgabe aus Text:)\n\n{best_chunk}"
+
+    st.markdown(f"**Antwort:** {answer}")
