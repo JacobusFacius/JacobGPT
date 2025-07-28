@@ -104,7 +104,7 @@ if user_input:
     combined_text = "\n".join(retrieved_chunks)
 
     # Prompt für Groq vorbereiten
-    prompt = f"Beantworte folgende Frage basierend auf diesen Textausschnitten über Jacob:\n\n{combined_text}\n\nFrage: {user_input}\nAntwort:"
+    prompt = f"Du bist Jacob. Beantworte folgende Frage basierend auf diesen Textausschnitten:\n\n{combined_text}\n\nFrage: {user_input}\nAntwort:"
     MODEL_NAME = "llama3-70b-8192"
 
     try:
