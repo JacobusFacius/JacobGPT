@@ -2,12 +2,12 @@ import streamlit as st
 from langchain.embeddings import HuggingFaceEmbeddings
 from langchain.vectorstores import FAISS
 from langchain.text_splitter import CharacterTextSplitter
-from langchain.llms import Ollama
 from langchain.chains import RetrievalQA
 from langchain.schema import Document
+from langchain_groq import ChatGroq
 
 # ==============================
-# 1. Textbasis direkt im Code
+# 1. Bewerbungstext als Input
 # ==============================
 
 text = """
@@ -27,7 +27,7 @@ Gerne stehe ich Ihnen jederzeit zur Verfügung und würde mich sehr darüber fre
 
 Ich freue mich auf Ihre Rückmeldung.
 
-Mit freundlichen Grüßen,
+Mit freundlichen Grüßen,  
 Jacob Facius
 """
 
@@ -35,22 +35,29 @@ Jacob Facius
 # 2. Verarbeitung & Vektoren
 # ==============================
 
-# Text in Dokumentobjekte konvertieren
+# Text vorbereiten
 doc = Document(page_content=text)
 text_splitter = CharacterTextSplitter(chunk_size=500, chunk_overlap=50)
 docs = text_splitter.split_documents([doc])
 
-# Embeddings laden
+# Embeddings + FAISS
 embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
 db = FAISS.from_documents(docs, embeddings)
 retriever = db.as_retriever()
 
-# Mistral via Ollama (lokal) verwenden
-llm = Ollama(model="mistral")
+# ==============================
+# 3. LLM über Groq
+# ==============================
+
+llm = ChatGroq(
+    api_key="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",
+    model_name="mixtral-8x7b-32768"
+)
+
 qa_chain = RetrievalQA.from_chain_type(llm=llm, retriever=retriever)
 
 # ==============================
-# 3. Streamlit App
+# 4. Streamlit App
 # ==============================
 
 st.set_page_config(page_title="Jacob Chatbot", page_icon="🤖")
