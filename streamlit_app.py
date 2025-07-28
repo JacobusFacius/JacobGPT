@@ -38,39 +38,51 @@ index = faiss.IndexFlatL2(dimension)
 index.add(np.array(embeddings))
 
 # =====================
-# 3. Streamlit UI
+# 3. Streamlit UI Setup
 # =====================
+st.set_page_config(page_title="JacobGPT – Bewerbungschatbot", page_icon="🤖")
 st.title("🤖 JacobGPT – Bewerbungschatbot")
-query = st.text_input("Was möchtest du über Jacob wissen?")
+
+# Initialisiere Session-State für den Chat-Verlauf
+if "chat_history" not in st.session_state:
+    st.session_state.chat_history = []
 
 # =====================
-# 4. Anfrage verarbeiten
+# 4. Chat Interface
 # =====================
-if query:
+# Eingabefeld als Chat-Eingabe
+user_input = st.chat_input("Was möchtest du über Jacob wissen?")
+
+if user_input:
+    # Zeige Nutzereingabe im Chat
+    st.session_state.chat_history.append({"role": "user", "content": user_input})
+
     # Embedding der Anfrage berechnen
-    query_embedding = model.encode([query])
+    query_embedding = model.encode([user_input])
     D, I = index.search(np.array(query_embedding), k=1)
     best_chunk = text_chunks[I[0][0]]
 
     # Prompt für Groq vorbereiten
-    prompt = f"Beantworte folgende Frage basierend auf diesem Textausschnitt:\n\nText: {best_chunk}\n\nFrage: {query}\nAntwort:"
-
-    MODEL_NAME = "llama3-70b-8192"  # Aktualisiertes Modell
+    prompt = f"Beantworte folgende Frage basierend auf diesem Textausschnitt:\n\nText: {best_chunk}\n\nFrage: {user_input}\nAntwort:"
+    MODEL_NAME = "llama3-70b-8192"
 
     try:
-        # Chat Completion von Groq holen
-        chat_completion = client.chat.completions.create(
+        # Modell-Antwort abrufen
+        response = client.chat.completions.create(
             messages=[
                 {"role": "system", "content": "Du bist ein hilfreicher Assistent."},
                 {"role": "user", "content": prompt}
             ],
             model=MODEL_NAME
         )
-
-        answer = chat_completion.choices[0].message.content.strip()
-
+        answer = response.choices[0].message.content.strip()
     except Exception as e:
         answer = f"Fehler bei der Anfrage an Groq (Modell {MODEL_NAME}): {e}"
 
-    # Antwort anzeigen
-    st.markdown(f"**Antwort:** {answer}")
+    # Modellantwort speichern
+    st.session_state.chat_history.append({"role": "assistant", "content": answer})
+
+# Chatverlauf anzeigen
+for msg in st.session_state.chat_history:
+    with st.chat_message(msg["role"]):
+        st.markdown(msg["content"])
