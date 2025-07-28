@@ -14,12 +14,15 @@ groq_api_key = st.secrets["GROQ_API_KEY"]
 # Groq-Client initialisieren
 client = Groq(api_key=groq_api_key)
 
+# Anzahl der Chunks, die bei der Antwort berücksichtigt werden
+NUM_CHUNKS = 3
+
 # Text Chunks (deine Infos)
 text_chunks = [
     "Jacob Facius ist 26 Jahre alt.",
     "Er ist 26 Jahre alt.",
-    "Jacob Facius studiert Wirtschaftsinformatik im Master."
-    "Er studiert Wirtschaftsinformatik im Master."
+    "Jacob Facius studiert Wirtschaftsinformatik im Master.",
+    "Er studiert Wirtschaftsinformatik im Master.",
     "Er arbeitet bei Duagon im Bereich Business Intelligence.",
     "Er kennt sich mit Power BI, Python, R, SQL und Machine Learning aus.",
     "Er hat einen Chatbot für interne Dokumente gebaut.",
@@ -62,11 +65,14 @@ if user_input:
 
     # Embedding der Anfrage berechnen
     query_embedding = model.encode([user_input])
-    D, I = index.search(np.array(query_embedding), k=1)
-    best_chunk = text_chunks[I[0][0]]
+    D, I = index.search(np.array(query_embedding), k=NUM_CHUNKS)
+    retrieved_chunks = [text_chunks[i] for i in I[0]]
+
+    # Mehrere relevante Textabschnitte kombinieren
+    combined_text = "\n".join(retrieved_chunks)
 
     # Prompt für Groq vorbereiten
-    prompt = f"Beantworte folgende Frage basierend auf diesem Textausschnitt über Jacob:\n\nText: {best_chunk}\n\nFrage: {user_input}\nAntwort:"
+    prompt = f"Beantworte folgende Frage basierend auf diesen Textausschnitten über Jacob:\n\n{combined_text}\n\nFrage: {user_input}\nAntwort:"
     MODEL_NAME = "llama3-70b-8192"
 
     try:
