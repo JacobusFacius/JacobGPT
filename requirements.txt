@@ -1,3 +1,5 @@
 streamlit
 faiss-cpu
 sentence-transformers
+groq
+python-dotenv
