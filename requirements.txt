@@ -2,4 +2,4 @@ streamlit
 langchain
 faiss-cpu
 sentence-transformers
-langchain-groq
+langchain
