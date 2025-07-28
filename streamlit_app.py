@@ -89,7 +89,7 @@ if "chat_history" not in st.session_state:
 # 4. Chat Interface
 # =====================
 # Eingabefeld als Chat-Eingabe
-user_input = st.chat_input("Was möchtest du über Jacob wissen?")
+user_input = st.chat_input("Hallo, ich bin JacobGPT. Was möchtest du über mich wissen?")
 
 if user_input:
     # Zeige Nutzereingabe im Chat
