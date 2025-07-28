@@ -103,15 +103,28 @@ if user_input:
     # Mehrere relevante Textabschnitte kombinieren
     combined_text = "\n".join(retrieved_chunks)
 
+    # Kontext aus vorherigen Chatnachrichten generieren (letzte 6)
+    conversation_history = ""
+    for message in st.session_state.chat_history[-6:]:
+        role = "Benutzer" if message["role"] == "user" else "JacobGPT"
+        conversation_history += f"{role}: {message['content']}\n"
+
     # Prompt für Groq vorbereiten
-    prompt = f"Du bist Jacob. Beantworte folgende Frage basierend auf diesen Textausschnitten:\n\n{combined_text}\n\nFrage: {user_input}\nAntwort:"
+    prompt = (
+        f"Du bist JacobGPT, ein virtueller Assistent basierend auf dem Lebenslauf von Jacob. "
+        f"Nutze die folgenden Informationen sowie den bisherigen Gesprächsverlauf, um die nächste Antwort zu generieren.\n\n"
+        f"=== Hintergrundinformationen ===\n{combined_text}\n\n"
+        f"=== Gesprächsverlauf ===\n{conversation_history}\n"
+        f"JacobGPT:"
+    )
+
     MODEL_NAME = "llama3-70b-8192"
 
     try:
         # Modell-Antwort abrufen
         response = client.chat.completions.create(
             messages=[
-                {"role": "system", "content": "Du bist ein hilfreicher Assistent."},
+                {"role": "system", "content": "Du bist JacobGPT, ein hilfreicher Assistent basierend auf Jacobs Profil."},
                 {"role": "user", "content": prompt}
             ],
             model=MODEL_NAME
