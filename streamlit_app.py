@@ -29,7 +29,7 @@ text_chunks = [
 # =====================
 # 2. Embeddings & Index
 # =====================
-model = SentenceTransformer("llama3-70b-8192")
+model = SentenceTransformer("all-MiniLM-L6-v2")
 embeddings = model.encode(text_chunks)
 dimension = embeddings.shape[1]
 
@@ -40,7 +40,7 @@ index.add(np.array(embeddings))
 # =====================
 # 3. Streamlit UI
 # =====================
-st.title("🤖 JacobGPT")
+st.title("🤖 JacobGPT – Bewerbungschatbot")
 query = st.text_input("Was möchtest du über Jacob wissen?")
 
 # =====================
@@ -55,6 +55,8 @@ if query:
     # Prompt für Groq vorbereiten
     prompt = f"Beantworte folgende Frage basierend auf diesem Textausschnitt:\n\nText: {best_chunk}\n\nFrage: {query}\nAntwort:"
 
+    MODEL_NAME = "llama3-70b-8192"  # Aktualisiertes Modell
+
     try:
         # Chat Completion von Groq holen
         chat_completion = client.chat.completions.create(
@@ -62,13 +64,13 @@ if query:
                 {"role": "system", "content": "Du bist ein hilfreicher Assistent."},
                 {"role": "user", "content": prompt}
             ],
-            model="llama3-70b-8192"  # Alternativen: "llama3-70b-8192", "gemma-7b-it"
+            model=MODEL_NAME
         )
 
         answer = chat_completion.choices[0].message.content.strip()
 
     except Exception as e:
-        answer = f"Fehler bei der Anfrage an Groq: {e}"
+        answer = f"Fehler bei der Anfrage an Groq (Modell {MODEL_NAME}): {e}"
 
     # Antwort anzeigen
     st.markdown(f"**Antwort:** {answer}")
