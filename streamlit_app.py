@@ -2,12 +2,22 @@ import streamlit as st
 from sentence_transformers import SentenceTransformer
 import faiss
 import numpy as np
-import subprocess
-import json
+from groq import Groq
+from dotenv import load_dotenv
+import os
 
 # =====================
-# 1. Text vorbereiten
+# 1. Vorbereitung
 # =====================
+
+# API-Key aus .env laden
+load_dotenv()
+groq_api_key = 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
+
+# Groq-Client initialisieren
+client = Groq(api_key=groq_api_key)
+
+# Text Chunks (deine Infos)
 text_chunks = [
     "Jacob Facius ist 26 Jahre alt und studiert Wirtschaftsinformatik im Master.",
     "Er arbeitet bei Duagon im Bereich Business Intelligence.",
@@ -20,38 +30,48 @@ text_chunks = [
 ]
 
 # =====================
-# 2. Embeddings
+# 2. Embeddings & Index
 # =====================
 model = SentenceTransformer("all-MiniLM-L6-v2")
 embeddings = model.encode(text_chunks)
-
-# FAISS Index
 dimension = embeddings.shape[1]
+
+# FAISS Index erstellen und Embeddings hinzufügen
 index = faiss.IndexFlatL2(dimension)
 index.add(np.array(embeddings))
 
 # =====================
-# 3. Suche & Chat
+# 3. Streamlit UI
 # =====================
 st.title("🤖 JacobGPT – Bewerbungschatbot")
 query = st.text_input("Was möchtest du über Jacob wissen?")
 
+# =====================
+# 4. Anfrage verarbeiten
+# =====================
 if query:
+    # Embedding der Anfrage berechnen
     query_embedding = model.encode([query])
     D, I = index.search(np.array(query_embedding), k=1)
     best_chunk = text_chunks[I[0][0]]
 
-    # Optional: Wenn Mistral über Ollama läuft
-    try:
-        prompt = f"Beantworte folgende Frage basierend auf diesem Textausschnitt:\n\nText: {best_chunk}\n\nFrage: {query}\nAntwort:"
-        response = subprocess.run(
-            ["ollama", "run", "mistral", prompt],
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            text=True
-        )
-        answer = response.stdout.strip()
-    except Exception:
-        answer = f"(Kein Mistral gefunden – Rückgabe aus Text:)\n\n{best_chunk}"
+    # Prompt für Groq vorbereiten
+    prompt = f"Beantworte folgende Frage basierend auf diesem Textausschnitt:\n\nText: {best_chunk}\n\nFrage: {query}\nAntwort:"
 
+    try:
+        # Chat Completion von Groq holen
+        chat_completion = client.chat.completions.create(
+            messages=[
+                {"role": "system", "content": "Du bist ein hilfreicher Assistent."},
+                {"role": "user", "content": prompt}
+            ],
+            model="mixtral-8x7b-32768"  # Alternativen: "llama3-70b-8192", "gemma-7b-it"
+        )
+
+        answer = chat_completion.choices[0].message.content.strip()
+
+    except Exception as e:
+        answer = f"Fehler bei der Anfrage an Groq: {e}"
+
+    # Antwort anzeigen
     st.markdown(f"**Antwort:** {answer}")
