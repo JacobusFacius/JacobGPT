@@ -12,7 +12,8 @@ import os
 
 # API-Key aus .env laden
 load_dotenv()
-groq_api_key = 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
+groq_api_key = "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"
+
 
 # Groq-Client initialisieren
 client = Groq(api_key=groq_api_key)
