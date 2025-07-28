@@ -1,5 +1,5 @@
 streamlit
+langchain
 faiss-cpu
 sentence-transformers
-groq
-python-dotenv
+mistralai
