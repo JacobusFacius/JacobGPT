@@ -111,11 +111,12 @@ if user_input:
 
     # Prompt für Groq vorbereiten
     prompt = (
-        f"Du bist JacobGPT, ein virtueller Assistent basierend auf dem Lebenslauf von Jacob. "
-        f"Nutze die folgenden Informationen sowie den bisherigen Gesprächsverlauf, um die nächste Antwort zu generieren.\n\n"
-        f"=== Hintergrundinformationen ===\n{combined_text}\n\n"
-        f"=== Gesprächsverlauf ===\n{conversation_history}\n"
-        f"JacobGPT:"
+    f"Du bist JacobGPT – ein virtueller Assistent, der Jacob bei Bewerbungen unterstützt. "
+    f"Deine Aufgabe ist es, maßgeschneiderte und überzeugende Antworten für seine Bewerbungsprozesse zu erstellen. "
+    f"Nutze Jacobs Lebenslauf und die bisherigen Gesprächsinhalte als Grundlage für deine nächste Antwort.\n\n"
+    f"=== Hintergrundinformationen ===\n{combined_text}\n\n"
+    f"=== Gesprächsverlauf ===\n{conversation_history}\n"
+    f"JacobGPT:"
     )
 
     MODEL_NAME = "llama3-70b-8192"
