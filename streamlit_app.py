@@ -29,7 +29,7 @@ text_chunks = [
 # =====================
 # 2. Embeddings & Index
 # =====================
-model = SentenceTransformer("all-MiniLM-L6-v2")
+model = SentenceTransformer("llama-3.3-70b-versatile")
 embeddings = model.encode(text_chunks)
 dimension = embeddings.shape[1]
 
@@ -62,7 +62,7 @@ if query:
                 {"role": "system", "content": "Du bist ein hilfreicher Assistent."},
                 {"role": "user", "content": prompt}
             ],
-            model="mixtral-8x7b-32768"  # Alternativen: "llama3-70b-8192", "gemma-7b-it"
+            model="llama-3.3-70b-versatile"  # Alternativen: "llama3-70b-8192", "gemma-7b-it"
         )
 
         answer = chat_completion.choices[0].message.content.strip()
