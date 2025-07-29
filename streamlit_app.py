@@ -1,16 +1,3 @@
-"""
-Verbesserte Version von JacobGPT.
-
-Diese Variante optimiert die Chunk‑Auswahl und das Halluzinations‑Handling.
-Die folgenden Änderungen wurden umgesetzt:
-
-* Die Keyword‑Bewertung nutzt nun einen deutschen Stemmer, um verschiedene Wortformen besser zu erfassen.
-* Die Rangliste der Chunks kombiniert den Embedding‑Score aus FAISS mit der Keyword‑Übereinstimmung (gewichtet).
-* Das Prompt wurde präzisiert, damit das Modell nur aus den bereitgestellten Hintergrundinformationen antwortet und bei fehlendem Wissen klar "Nicht gefunden" meldet.
-* Nach der Generierung wird die Antwort semantisch mit dem Kontext verglichen. Wenn sie nicht hinreichend zum Kontext passt, wird "Nicht gefunden" ausgegeben.
-
-Hinweis: Dieses Skript setzt voraus, dass `sentence_transformers`, `faiss`, `nltk` und `groq` verfügbar sind.
-"""
 
 import re
 from typing import List
@@ -20,8 +7,6 @@ import faiss
 import streamlit as st
 from groq import Groq
 from sentence_transformers import SentenceTransformer
-
-# NLTK‑Stemmer importieren und downloaden, um deutsche Wortstämme zu erzeugen
 import nltk
 from nltk.stem.snowball import GermanStemmer
 
