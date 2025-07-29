@@ -3,141 +3,136 @@ from sentence_transformers import SentenceTransformer
 import faiss
 import numpy as np
 from groq import Groq
+import re
+from typing import List
 
-# =====================
+# =====================================================
 # 1. Vorbereitung
-# =====================
+# =====================================================
 
-# API-Key aus Streamlit secrets laden
+# API‑Key aus Streamlit secrets laden
 groq_api_key = st.secrets["GROQ_API_KEY"]
 
-# Groq-Client initialisieren
+# Groq‑Client initialisieren
 client = Groq(api_key=groq_api_key)
 
-# Anzahl der Chunks, die bei der Antwort berücksichtigt werden
-NUM_CHUNKS = 3
+# Anzahl der finalen Chunks, die an das Modell übergeben werden
+NUM_FINAL_CHUNKS = 3
 
-# Text Chunks (deine Infos)
+# Wissensbasis: Liste an Textabschnitten über Jacob Facius
 text_chunks = [
-    "Jacob Facius ist 26 Jahre alt.",
-    "Er ist 26 Jahre alt.",
-    "Jacob Facius studiert Wirtschaftsinformatik im Master.",
-    "Er studiert Wirtschaftsinformatik im Master.",
-    "Er arbeitet bei Duagon im Bereich Business Intelligence.",
-    "Er kennt sich mit Power BI, Python, R, SQL und Machine Learning aus.",
-    "Er hat einen Chatbot für interne Dokumente gebaut.",
-    "Seine Masterarbeit behandelt Datenschutz bei KI im Unternehmen.",
-    "Er entwickelte mit dem MIT ein KI-Modell zur Emotionserkennung bei Pferden.",
-    "Er schließt sein Studium im November 2025 ab.",
-    "Weitere Infos unter jacob-facius.de.",
-    "Ich bin Jacob und absolviere derzeit das Masterstudium in Wirtschaftsinformatik an der Universität Bamberg.",
-    "Ich interessiere mich besonders für datengetriebene Themen wie SQL-Abfragen, Power BI und KI-Modelle.",
-    "Ich entwickle gerne innovative und effektive Lösungen mit echtem Mehrwert.",
-    "Ich konnte meine Datenkompetenz bereits in zahlreichen Projekten als Werkstudent einbringen.",
-    "Seit Oktober 2023: Werkstudent Business Intelligence bei duagon.",
-    "Bei duagon: Entwicklung von KI-Modellen, Datenanalyse, Prognosen, Power BI-Berichte.",
-    "Seit Oktober 2023: Master Wirtschaftsinformatik an der Universität Bamberg.",
-    "August 2023: Bachelor Wirtschaftswissenschaften mit Schwerpunkt Wirtschaftsinformatik an der FAU Erlangen-Nürnberg.",
-    "Bachelorarbeit über Fairness in NLP, Note: 1,3.",
-    "Juli 2022 – September 2023: Werkstudent Business Intelligence bei anwalt.de.",
-    "Bei anwalt.de: Analysen, Prognosen, Kunden-Insights, Power BI, Python, Excel, abteilungsübergreifende Zusammenarbeit.",
-    "Oktober 2020 – Juni 2022: Werkstudent Service bei anwalt.de – Kundenbetreuung, SEO, Akquise, Support.",
-    "Februar 2020 – Oktober 2020: Customer Care Agent bei anwalt.de – Forderungsmanagement, Datenrecherche, Profilgestaltung.",
-    "Juni 2019: Reise durch Indien, Nepal und Indonesien – interkulturelle Kompetenz und Stressresistenz.",
-    "Oktober 2018 – Juni 2019: Barkeeper – Organisation, Struktur, Stressresistenz.",
-    "Juni 2018: Abitur am Johannes-Scharrer-Gymnasium Nürnberg."
-    "Power BI – Erstellung interaktiver, visueller Berichte als Basis für Prognosen und Entscheidungen.",
-    "SQL – Komplexe Abfragen in Studium und Beruf zur Datenextraktion und Analyse.",
-    "Python – Erfahrung mit Pandas, NumPy, Scikit-learn, Matplotlib.",
-    "R / RStudio – Daten filtern, analysieren und visualisieren.",
-    "Tableau – Datenaufbereitung und Visualisierung im Studium.",
-    "JavaScript – autodidaktisch erlernt, gelegentlich im Studium verwendet.",
-    "HTML & CSS – Kenntnisse durch eigene Webseitenentwicklung.",
-    "MS Office – Excel, PowerPoint und Word sicher in Studium und Beruf genutzt.",
-    "Deutsch – 5 von 5.",
-    "Englisch – 5 von 5.",
-    "Spanisch – 2 von 5.",
-    "Name: Jacob Facius.",
-    "Adresse: Krugstraße 71, 90419 Nürnberg.",
-    "E-Mail: info@jacob-facius.de.",
-    "Telefon: +49 1637 250148.",
-    "Kontaktformular vorhanden auf Webseite."
+    "Jacob Facius ist 26 Jahre alt und kommt aus Nürnberg.",
+    "Er studiert Wirtschaftsinformatik im Master an der Universität Bamberg und wird sein Studium im November 2025 abschließen.",
+    "Jacob arbeitet seit Oktober 2023 als Werkstudent im Bereich Business Intelligence bei duagon und entwickelt dort KI‑Modelle, analysiert Daten, erstellt Prognosen und fertigt Power‑BI‑Berichte an.",
+    "Zuvor war er als Werkstudent bei anwalt.de tätig (Juli 2022 – September 2023) und beschäftigte sich dort mit Analysen, Prognosen und Kunden‑Insights (Python, Power BI, Excel).",
+    "In seiner Bachelorarbeit untersuchte er Fairness in NLP und erhielt die Note 1,3.",
+    "Jacob besitzt Kenntnisse in Power BI, Python (Pandas, NumPy, Scikit‑learn, Matplotlib), R / RStudio, SQL, Tableau, JavaScript, HTML/CSS und verwendet MS Office sicher.",
+    "Er spricht fließend Deutsch und Englisch sowie etwas Spanisch.",
+    "Er hat einen Chatbot für interne Dokumente gebaut und seine Masterarbeit behandelt Datenschutz bei KI im Unternehmen.",
+    "Gemeinsam mit dem MIT entwickelte er ein KI‑Modell zur Emotionserkennung bei Pferden.",
+    "Weitere Informationen stehen auf jacob-facius.de.",
+    "Sein Name ist Jacob Facius und seine Kontaktdaten sind: Krugstraße 71, 90419 Nürnberg, E‑Mail: info@jacob-facius.de, Telefon: +49 1637 250148."
 ]
 
-# =====================
+# =====================================================
 # 2. Embeddings & Index
-# =====================
-model = SentenceTransformer("all-MiniLM-L6-v2")
-embeddings = model.encode(text_chunks)
+# =====================================================
+
+# Embedding‑Modell wählen. "BAAI/bge-base-en-v1.5" ist ein starkes Modell; für
+# deutsche Daten kann alternativ "BAAI/bge-large-de" genutzt werden (Internet
+# erforderlich).
+embedding_model_name = "nomic-embed-text"
+model = SentenceTransformer(embedding_model_name)
+
+# Embeddings erstellen und normalisieren (Wichtig für Cosinus‑Ähnlichkeit)
+embeddings = model.encode(text_chunks, normalize_embeddings=True)
 dimension = embeddings.shape[1]
 
-# FAISS Index erstellen und Embeddings hinzufügen
-index = faiss.IndexFlatL2(dimension)
-index.add(np.array(embeddings))
+# FAISS‑Index mit Inner Product (Cosine Similarity) erstellen und befüllen
+index = faiss.IndexFlatIP(dimension)
+index.add(embeddings)
 
-# =====================
-# 3. Streamlit UI Setup
-# =====================
+# =====================================================
+# 3. Hilfsfunktionen
+# =====================================================
+
+def keyword_score(chunk: str, query: str) -> int:
+    """Berechnet, wie viele Wörter aus der Anfrage im Chunk vorkommen."""
+    query_tokens = re.findall(r"\w+", query.lower())
+    chunk_tokens = set(re.findall(r"\w+", chunk.lower()))
+    return sum(1 for token in query_tokens if token in chunk_tokens)
+
+def retrieve_best_chunks(user_query: str, top_candidates: int = 10, final_k: int = 3) -> List[str]:
+    """
+    Ermittelt die Top‑k relevantesten Chunks für die Anfrage.
+
+    Zunächst werden per FAISS die `top_candidates` ähnlichsten Chunks geholt.
+    Anschließend sortieren wir diese anhand der Keyword-Übereinstimmung und
+    geben die `final_k` besten zurück.
+    """
+    query_embedding = model.encode([user_query], normalize_embeddings=True)
+    D, I = index.search(np.array(query_embedding), k=top_candidates)
+    candidates = [text_chunks[i] for i in I[0]]
+    ranked = sorted(candidates, key=lambda c: keyword_score(c, user_query), reverse=True)
+    return ranked[:final_k]
+
+# =====================================================
+# 4. Streamlit-UI Setup
+# =====================================================
+
 st.set_page_config(page_title="JacobGPT", page_icon="🤖")
-st.title("🤖 JacobGPT")
+st.title("JacobGPT🤖")
 
-# Initialisiere Session-State für den Chat-Verlauf
+# Chatverlauf in Session State speichern
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
 
-# =====================
-# 4. Chat Interface
-# =====================
-# Eingabefeld als Chat-Eingabe
+# =====================================================
+# 5. Chat Interface
+# =====================================================
+
 user_input = st.chat_input("Hallo, ich bin JacobGPT. Was möchtest du über mich wissen?")
 
 if user_input:
-    # Zeige Nutzereingabe im Chat
     st.session_state.chat_history.append({"role": "user", "content": user_input})
-
-    # Embedding der Anfrage berechnen
-    query_embedding = model.encode([user_input])
-    D, I = index.search(np.array(query_embedding), k=NUM_CHUNKS)
-    retrieved_chunks = [text_chunks[i] for i in I[0]]
-
-    # Mehrere relevante Textabschnitte kombinieren
-    combined_text = "\n".join(retrieved_chunks)
-
-    # Kontext aus vorherigen Chatnachrichten generieren (letzte 6)
+    retrieved_chunks = retrieve_best_chunks(user_input, top_candidates=10, final_k=NUM_FINAL_CHUNKS)
     conversation_history = ""
     for message in st.session_state.chat_history[-6:]:
         role = "Benutzer" if message["role"] == "user" else "JacobGPT"
         conversation_history += f"{role}: {message['content']}\n"
-
-    # Prompt für Groq vorbereiten
     prompt = (
-    f"Du bist JacobGPT – ein virtueller Assistent, der Jacob bei Bewerbungen unterstützt. "
-    f"Deine Aufgabe ist es, maßgeschneiderte und überzeugende Antworten für seine Bewerbungsprozesse zu erstellen. "
-    f"Nutze Jacobs Lebenslauf und die bisherigen Gesprächsinhalte als Grundlage für deine nächste Antwort.\n\n"
-    f"=== Hintergrundinformationen ===\n{combined_text}\n\n"
-    f"=== Gesprächsverlauf ===\n{conversation_history}\n"
-    f"JacobGPT:"
+        "Du bist JacobGPT – ein virtueller Assistent, der Jacob bei Bewerbungen unterstützt. "
+        "Antworte präzise und nutze ausschließlich die unten aufgeführten Hintergrundinformationen. "
+        "Sollte keine Information vorhanden sein, antworte mit 'Nicht gefunden'. \n\n"
+        "=== Hintergrundinformationen ===\n"
+        f"{chr(10).join(retrieved_chunks)}\n\n"
+        "=== Gesprächsverlauf ===\n"
+        f"{conversation_history}"
+        "Frage: {user_input}\n"
+        "Antwort:"
     )
-
     MODEL_NAME = "llama3-70b-8192"
-
     try:
-        # Modell-Antwort abrufen
         response = client.chat.completions.create(
             messages=[
                 {"role": "system", "content": "Du bist JacobGPT, ein hilfreicher Assistent basierend auf Jacobs Profil."},
                 {"role": "user", "content": prompt}
             ],
-            model=MODEL_NAME
+            model=MODEL_NAME,
+            temperature=0.1,
+            max_tokens=256
         )
         answer = response.choices[0].message.content.strip()
+        if keyword_score(answer, " ".join(retrieved_chunks)) == 0:
+            answer = "Nicht gefunden."
     except Exception as e:
         answer = f"Fehler bei der Anfrage an Groq (Modell {MODEL_NAME}): {e}"
-
-    # Modellantwort speichern
     st.session_state.chat_history.append({"role": "assistant", "content": answer})
 
-# Chatverlauf anzeigen
+# =====================================================
+# 6. Chatverlauf anzeigen
+# =====================================================
+
 for msg in st.session_state.chat_history:
     with st.chat_message(msg["role"]):
         st.markdown(msg["content"])
