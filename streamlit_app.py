@@ -10,10 +10,8 @@ from typing import List
 # 1. Vorbereitung
 # =====================================================
 
-# API‑Key aus Streamlit secrets laden
 groq_api_key = st.secrets["GROQ_API_KEY"]
 
-# Groq‑Client initialisieren
 client = Groq(api_key=groq_api_key)
 
 # Anzahl der finalen Chunks, die an das Modell übergeben werden
@@ -59,16 +57,79 @@ text_chunks = [
     "Kontaktdaten: Jacob Facius, Krugstraße 71, 90419 Nürnberg. E‑Mail: info@jacob-facius.de. Telefon: +49 1637 250148.",
 
     # Vision und Motto
-    "Jacob ist überzeugt, dass der Schlüssel zum Erfolg darin liegt, Daten effektiv zu nutzen und in nützliche Geschäftseinblicke umzuwandeln. Sein Motto lautet: ‚Datenanalyse und Programmieren faszinieren mich – besonders wenn es dazu beiträgt, unternehmerische Ziele zu erreichen.‘"
+    "Jacob ist überzeugt, dass der Schlüssel zum Erfolg darin liegt, Daten effektiv zu nutzen und in nützliche Geschäftseinblicke umzuwandeln. Sein Motto lautet: ‚Datenanalyse und Programmieren faszinieren mich – besonders wenn es dazu beiträgt, unternehmerische Ziele zu erreichen.‘",
+
+    # Motivation und Leidenschaft
+    "Ich habe eine besondere Leidenschaft für datengesteuerte Arbeit und liebe es, aus Daten neues Wissen zu generieren und innovative Lösungen zu entwickeln, die Unternehmen echten Mehrwert bieten.",
+
+    # Stärken und Verantwortungsbewusstsein
+    "Zu meinen Stärken gehören analytisches Denken und die Fähigkeit, komplexe Daten zu strukturieren und in verständliche Erkenntnisse umzuwandeln. In meiner Tätigkeit bei duagon entwickle ich eigenverantwortlich KI‑Modelle, analysiere Daten, erstelle Prognosen und baue Power‑BI‑Berichte; dabei erweitere ich kontinuierlich meine Fähigkeiten.",
+
+    # Teamarbeit und Kommunikation
+    "Ich arbeite gerne im Team und in interdisziplinären Projekten. Bei Anwalt.de stimmte ich mich regelmäßig abteilungsübergreifend ab und koordinierte meine Projekte selbstständig. Diese Erfahrungen zeigen, wie wichtig Kommunikation und Zusammenarbeit sind, um erfolgreiche Ergebnisse zu erzielen.",
+
+    # Lernbereitschaft und Weiterbildung
+    "Ich bin sehr lernbereit und erweitere ständig mein Wissen. Aktuell vertiefe ich meine Kenntnisse in Python und verschiedenen Machine‑Learning‑Bibliotheken wie Pandas, NumPy, Scikit‑learn und Matplotlib. Außerdem nutze ich R und Tableau zur Datenanalyse und bilde mich in Webtechnologien wie JavaScript, HTML und CSS weiter.",
+
+    # Umgang mit Herausforderungen
+    "Durch eine sechsmonatige Reise durch Indien, Nepal und Indonesien habe ich gelernt, mit ungewohnten Situationen umzugehen und auch unter schwierigen Bedingungen einen kühlen Kopf zu bewahren. Diese Fähigkeit hilft mir, mich schnell in neue Themen einzuarbeiten und Probleme strukturiert zu lösen.",
+
+    # Zukunftsziele
+    "Mein langfristiges Ziel ist es, mich in Business Intelligence und Künstlicher Intelligenz weiterzuentwickeln und datengestützte Strategien zu entwerfen, die Unternehmen helfen, bessere Entscheidungen zu treffen und die Zukunft mitzugestalten.",
+
+    # Arbeitsweise unter Stress
+    "Ich arbeite strukturiert und organisiere mich auch in stressigen Situationen – diese Fähigkeit habe ich unter anderem in meiner Arbeit als Barkeeper entwickelt. Sie hilft mir, in analytischen Projekten den Überblick zu behalten und effizient zu arbeiten.",
+
+    # Kundenorientierung
+    "Meine Zeit im Service von Anwalt.de hat mir gezeigt, wie wichtig es ist, auf Kunden einzugehen und komplexe Informationen verständlich zu vermitteln. Diese Erfahrung ermöglicht es mir, Ergebnisse aus Datenanalysen klar zu kommunizieren und auf die Bedürfnisse verschiedener Stakeholder einzugehen.",
+
+        # Zertifikat Data‑Driven Decisions with PowerBI
+    "Jacob hat das Zertifikat „Data‑Driven Decisions with PowerBI“ absolviert und kann damit zeigen, wie man mit PowerBI datenbasierte Entscheidungen unterstützt und aussagekräftige Dashboards erstellt.",
+
+    # Zertifikat Data Analysis with Python
+    "Mit dem Zertifikat „Data Analysis with Python“ hat Jacob seine Kenntnisse in der Datenanalyse mit Python vertieft und kann Daten mit Bibliotheken wie Pandas, NumPy und Matplotlib professionell auswerten.",
+
+    # Zertifikat Databases and SQL for Data Science
+    "Durch das Zertifikat „Databases and SQL for Data Science“ beherrscht Jacob die Grundlagen relationaler Datenbanken und fortgeschrittene SQL‑Abfragen für Data‑Science‑Projekte.",
+
+    # Zertifikat Professional Scrum Master
+    "Als zertifizierter Professional Scrum Master kennt sich Jacob mit agilen Methoden und der Leitung von Scrum‑Teams aus und kann Entwicklungsprojekte effizient moderieren.",
+
+    # Zertifikat Mindreading with AI
+    "Das Zertifikat „Mindreading with AI“ zeigt Jacobs Interesse an innovativen KI‑Anwendungen – er hat gelernt, wie künstliche Intelligenz genutzt wird, um emotionale oder kognitive Zustände zu interpretieren.",
+
+    # Hobby FPV‑Drohnen
+    "Zu Jacobs Hobbys gehört das Bauen und Fliegen von FPV‑Drohnen – ein technisches Hobby, das sowohl Ingenieurwissen als auch Kreativität erfordert.",
+
+    # Hobby Wandern
+    "Jacob wandert gerne und verbringt Zeit in der Natur, was ihm einen Ausgleich zum datengetriebenen Arbeitsalltag bietet.",
+
+    # Hobby Webseiten bauen
+    "Eine weitere Freizeitbeschäftigung ist das Erstellen von Webseiten, womit Jacob seine Kenntnisse in HTML, CSS und JavaScript auch privat auslebt.",
+
+     # Persönliche Angaben und Studienfortschritt
+    "Jacob ist 26 Jahre alt, befindet sich im letzten Semester seines Masterstudiums der Wirtschaftsinformatik und arbeitet nebenbei als Werkstudent im Bereich Business Intelligence bei duagon.",
+
+    # Soft Skills und Arbeitsweise
+    "Er gilt als aufgeschlossener, kommunikativer Mensch, der Verantwortung übernimmt, kreative und lösungsorientierte Vorschläge ins Team einbringt und stets freundlich sowie respektvoll mit Kollegen und Mitmenschen umgeht. Seine Motivation und Begeisterung teilt er gern mit seinem Umfeld.",
+
+    # Aufbau einer Reporting‑Landschaft
+    "In seiner beruflichen Praxis hat Jacob eine interne Reporting‑Landschaft bei duagon konzipiert und umgesetzt: Er erfasste Anforderungen mit verschiedenen Stakeholdern, beschaffte und bereitete Daten auf und visualisierte sie in Power‑BI‑Dashboards; dabei vertiefte er seine Kenntnisse in Power BI, Python, R und SQL.",
+
+    # Chatbot‑Projekt und Schulungen
+    "Jacob beschäftigt sich intensiv mit Künstlicher Intelligenz und Machine Learning. Er entwickelte einen unternehmensinternen Chatbot, der Fragen zu firmenbezogenen Dokumenten beantwortet, und hält englischsprachige Schulungen zur verantwortungsvollen Nutzung von KI‑Tools im Unternehmen.",
+
+    # Akademische Erfolge und Masterarbeit
+    "Das Modul Advanced Data Visualization schloss Jacob mit der Bestnote 1,0 ab. Seine Masterarbeit trägt den Titel „Determinants of Sharing Sensitive Data with AI Tools in the Workplace: A Privacy Calculus Perspective“ und untersucht, welche Faktoren die Preisgabe sensibler Daten bei der Arbeit mit KI‑Tools beeinflussen.",
+
+    # Kooperation mit dem MIT
+    "Im Rahmen eines internationalen Projekts entwickelte Jacob gemeinsam mit dem MIT ein KI‑Modell zur Emotionserkennung bei Pferden – ein Beispiel für seine Begeisterung für innovative KI‑Anwendungen.",
 ]
 
 # =====================================================
 # 2. Embeddings & Index
 # =====================================================
 
-# Embedding‑Modell wählen. "BAAI/bge-base-en-v1.5" ist ein starkes Modell; für
-# deutsche Daten kann alternativ "BAAI/bge-large-de" genutzt werden (Internet
-# erforderlich).
 embedding_model_name = "all-MiniLM-L6-v2"
 model = SentenceTransformer(embedding_model_name)
 
