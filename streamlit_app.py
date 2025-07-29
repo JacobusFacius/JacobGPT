@@ -20,110 +20,155 @@ NUM_FINAL_CHUNKS = 3
 # Wissensbasis: Liste an Textabschnitten über Jacob Facius
 # Diese Chunks wurden aus der offiziellen Website jacob‑facius.de zusammengestellt.
 text_chunks = [
-    # Leidenschaft und Studium
-    "Jacob Facius studiert Wirtschaftsinformatik im Master an der Otto‑Friedrich‑Universität Bamberg. Er begeistert sich besonders für datengesteuerte Aspekte und nutzt präzise SQL‑Abfragen, aussagekräftige Power‑BI‑Berichte und moderne KI‑Modelle, um aus Daten neues Wissen zu gewinnen. Sein Ziel ist es, innovative Lösungen zu entwickeln, die Unternehmen echten Mehrwert bieten.",
+    # Studium und Leidenschaft
+    "Jacob Facius studiert Wirtschaftsinformatik im Master an der Otto‑Friedrich‑Universität Bamberg.",
+    "Er begeistert sich besonders für datengesteuerte Aspekte und nutzt präzise SQL‑Abfragen, aussagekräftige Power‑BI‑Berichte und moderne KI‑Modelle, um aus Daten neues Wissen zu gewinnen.",
+    "Sein Ziel ist es, innovative Lösungen zu entwickeln, die Unternehmen echten Mehrwert bieten.",
 
     # Werkstudent bei duagon
-    "Seit Oktober 2023 arbeitet Jacob als Werkstudent im Bereich Business Intelligence bei duagon. In dieser Rolle entwickelt er KI‑Modelle, beschafft und analysiert Daten, erstellt Prognosen und baut aussagekräftige Power‑BI‑Berichte. Die eigenverantwortliche Mitarbeit an Projekten ermöglicht ihm, seine Fähigkeiten stetig zu erweitern und aktiv zur technologischen Zukunft des Unternehmens beizutragen.",
+    "Seit Oktober 2023 arbeitet Jacob als Werkstudent im Bereich Business Intelligence bei duagon.",
+    "In dieser Rolle entwickelt er KI‑Modelle, beschafft und analysiert Daten, erstellt Prognosen und baut aussagekräftige Power‑BI‑Berichte.",
+    "Die eigenverantwortliche Mitarbeit an Projekten ermöglicht ihm, seine Fähigkeiten stetig zu erweitern und aktiv zur technologischen Zukunft des Unternehmens beizutragen.",
 
     # Master‑ und Bachelorstudium
-    "Parallel zu seiner Tätigkeit bei duagon begann Jacob im Oktober 2023 sein Masterstudium der Wirtschaftsinformatik in Bamberg. Davor absolvierte er im August 2023 sein Bachelorstudium der Wirtschaftswissenschaften mit Schwerpunkt Wirtschaftsinformatik an der Friedrich‑Alexander‑Universität Erlangen‑Nürnberg mit der Gesamtnote 2,1. Seine Bachelorarbeit über Fairness in Natural Language Processing wurde mit 1,3 bewertet.",
+    "Parallel zu seiner Tätigkeit bei duagon begann Jacob im Oktober 2023 sein Masterstudium der Wirtschaftsinformatik in Bamberg.",
+    "Davor absolvierte er im August 2023 sein Bachelorstudium der Wirtschaftswissenschaften mit Schwerpunkt Wirtschaftsinformatik an der Friedrich‑Alexander‑Universität Erlangen‑Nürnberg mit der Gesamtnote 2,1.",
+    "Seine Bachelorarbeit über Fairness in Natural Language Processing wurde mit 1,3 bewertet.",
 
     # Werkstudent bei Anwalt.de
-    "Von Juli 2022 bis September 2023 war Jacob als Werkstudent im Bereich Business Intelligence bei Anwalt.de tätig. Er führte Analysen durch, erstellte Prognosen und entwickelte Kunden‑Insights. Dabei beschaffte und bereitete er Daten auf, erstellte interaktive Power‑BI‑Berichte und führte Ad‑hoc‑Analysen mit Python oder Excel durch; Projekte koordinierte er selbstständig und arbeitete eng mit anderen Abteilungen zusammen.",
+    "Von Juli 2022 bis September 2023 war Jacob als Werkstudent im Bereich Business Intelligence bei Anwalt.de tätig.",
+    "Er führte Analysen durch, erstellte Prognosen und entwickelte Kunden‑Insights.",
+    "Dabei beschaffte und bereitete er Daten auf, erstellte interaktive Power‑BI‑Berichte und führte Ad‑hoc‑Analysen mit Python oder Excel durch.",
+    "Projekte koordinierte er selbstständig und arbeitete eng mit anderen Abteilungen zusammen.",
 
     # Service‑Erfahrung bei Anwalt.de
-    "Vor seiner BI‑Tätigkeit betreute Jacob ab Oktober 2020 im Service von Anwalt.de Rechtsanwälte, führte sie in ihre Profile ein und gab SEO‑Tipps. Zu seinen Aufgaben gehörten Kundenakquise, -bindung und -rückgewinnung sowie die Pflege von Profilen und Daten. Außerdem half er Ratsuchenden, den passenden Anwalt zu finden.",
+    "Vor seiner BI‑Tätigkeit betreute Jacob ab Oktober 2020 im Service von Anwalt.de Rechtsanwälte.",
+    "Er führte sie in ihre Profile ein und gab SEO‑Tipps.",
+    "Zu seinen Aufgaben gehörten Kundenakquise, -bindung und -rückgewinnung sowie die Pflege von Profilen und Daten.",
+    "Außerdem half er Ratsuchenden, den passenden Anwalt zu finden.",
 
     # Weitere berufliche Erfahrungen und Reisen
-    "Als Customer‑Care‑Agent kümmerte sich Jacob ab Februar 2020 um Forderungsmanagement, passte Profildesigns an und betrieb Datenrecherche. 2019 reiste er ein halbes Jahr durch Indien, Nepal und Indonesien und lernte dabei, mit ungewohnten Situationen umzugehen und einen kühlen Kopf zu bewahren.",
+    "Als Customer‑Care‑Agent kümmerte sich Jacob ab Februar 2020 um Forderungsmanagement, passte Profildesigns an und betrieb Datenrecherche.",
+    "2019 reiste er ein halbes Jahr durch Indien, Nepal und Indonesien und lernte dabei, mit ungewohnten Situationen umzugehen und einen kühlen Kopf zu bewahren.",
 
     # Nebentätigkeiten und Schulabschluss
-    "Im Oktober 2018 arbeitete Jacob als Barkeeper in der ‚Vintage Bar‘, bereitete Schichten vor, mixte Getränke und bediente Gäste; dabei lernte er, strukturiert und organisiert unter Stress zu arbeiten. Sein Abitur legte er 2018 am Johannes‑Scharrer‑Gymnasium in Nürnberg ab.",
+    "Im Oktober 2018 arbeitete Jacob als Barkeeper in der ‚Vintage Bar‘, bereitete Schichten vor, mixte Getränke und bediente Gäste; dabei lernte er, strukturiert und organisiert unter Stress zu arbeiten.",
+    "Sein Abitur legte er 2018 am Johannes‑Scharrer‑Gymnasium in Nürnberg ab.",
 
     # Power‑BI‑ und SQL‑Kompetenz
-    "Jacob setzt Power BI professionell ein, um interaktive und visuell ansprechende Berichte zu erstellen, die als Grundlage für Prognosen und strategische Entscheidungen dienen. Er verfügt über fundierte SQL‑Kenntnisse und arbeitet sowohl im Studium als auch beruflich mit komplexen Datenbank‑Abfragen.",
+    "Jacob setzt Power BI professionell ein, um interaktive und visuell ansprechende Berichte zu erstellen, die als Grundlage für Prognosen und strategische Entscheidungen dienen.",
+    "Er verfügt über fundierte SQL‑Kenntnisse und arbeitet sowohl im Studium als auch beruflich mit komplexen Datenbank‑Abfragen.",
 
     # Programmiersprachen und Datenanalyse
-    "Er hat sehr gute Kenntnisse in Python, und hat bereits Erfahrung mit Pandas, NumPy, Scikit‑learn und Matplotlib gesammelt. Zudem arbeitet er mit R, um Daten zu filtern, zu analysieren und in strukturierten Grafiken darzustellen.",
+    "Er hat sehr gute Kenntnisse in Python und hat bereits Erfahrung mit Pandas, NumPy, Scikit‑learn und Matplotlib gesammelt.",
+    "Zudem arbeitet er mit R, um Daten zu filtern, zu analysieren und in strukturierten Grafiken darzustellen.",
 
     # Weitere Tools und Webtechnologien
-    "Jacob besitzt Erfahrung in Tableau zur Datenaufbereitung und Visualisierung. JavaScript hat er sich selbst beigebracht und in Studienprojekten genutzt; HTML und CSS beherrscht er sicher und hat seine Kenntnisse während des Studiums vertieft.",
+    "Jacob besitzt Erfahrung in Tableau zur Datenaufbereitung und Visualisierung.",
+    "JavaScript hat er sich selbst beigebracht und in Studienprojekten genutzt.",
+    "HTML und CSS beherrscht er sicher und hat seine Kenntnisse während des Studiums vertieft.",
 
     # Office‑Programme und Sprachen
-    "Er ist sehr versiert im Umgang mit Excel, PowerPoint und Word. Jacob spricht Deutsch und Englisch fließend und verfügt über Grundkenntnisse in Spanisch.",
+    "Er ist sehr versiert im Umgang mit Excel, PowerPoint und Word.",
+    "Jacob spricht Deutsch und Englisch fließend.",
+    "Er verfügt über Grundkenntnisse in Spanisch.",
 
     # Kontakt und persönliche Daten
-    "Kontaktdaten: Jacob Facius, Krugstraße 71, 90419 Nürnberg. E‑Mail: info@jacob-facius.de. Telefon: +49 1637 250148.",
+    "Jacob Facius wohnt in der Krugstraße 71, 90419 Nürnberg.",
+    "Seine E‑Mail‑Adresse lautet info@jacob-facius.de.",
+    "Telefon: +49 1637 250148.",
 
     # Vision und Motto
-    "Jacob ist überzeugt, dass der Schlüssel zum Erfolg darin liegt, Daten effektiv zu nutzen und in nützliche Geschäftseinblicke umzuwandeln. Sein Motto lautet: ‚Datenanalyse und Programmieren faszinieren mich – besonders wenn es dazu beiträgt, unternehmerische Ziele zu erreichen.‘",
+    "Jacob ist überzeugt, dass der Schlüssel zum Erfolg darin liegt, Daten effektiv zu nutzen und in nützliche Geschäftseinblicke umzuwandeln.",
+    "Sein Motto lautet: ‚Datenanalyse und Programmieren faszinieren mich – besonders wenn es dazu beiträgt, unternehmerische Ziele zu erreichen.‘",
 
     # Motivation und Leidenschaft
     "Ich habe eine besondere Leidenschaft für datengesteuerte Arbeit und liebe es, aus Daten neues Wissen zu generieren und innovative Lösungen zu entwickeln, die Unternehmen echten Mehrwert bieten.",
 
     # Stärken und Verantwortungsbewusstsein
-    "Zu meinen Stärken gehören analytisches Denken und die Fähigkeit, komplexe Daten zu strukturieren und in verständliche Erkenntnisse umzuwandeln. In meiner Tätigkeit bei duagon entwickle ich eigenverantwortlich KI‑Modelle, analysiere Daten, erstelle Prognosen und baue Power‑BI‑Berichte; dabei erweitere ich kontinuierlich meine Fähigkeiten.",
+    "Zu meinen Stärken gehören analytisches Denken und die Fähigkeit, komplexe Daten zu strukturieren und in verständliche Erkenntnisse umzuwandeln.",
+    "In meiner Tätigkeit bei duagon entwickle ich eigenverantwortlich KI‑Modelle, analysiere Daten, erstelle Prognosen und baue Power‑BI‑Berichte.",
+    "Dabei erweitere ich kontinuierlich meine Fähigkeiten.",
 
     # Teamarbeit und Kommunikation
-    "Ich arbeite gerne im Team und in interdisziplinären Projekten. Bei Anwalt.de stimmte ich mich regelmäßig abteilungsübergreifend ab und koordinierte meine Projekte selbstständig. Diese Erfahrungen zeigen, wie wichtig Kommunikation und Zusammenarbeit sind, um erfolgreiche Ergebnisse zu erzielen.",
+    "Ich arbeite gerne im Team und in interdisziplinären Projekten.",
+    "Bei Anwalt.de stimmte ich mich regelmäßig abteilungsübergreifend ab.",
+    "Ich koordinierte meine Projekte selbstständig.",
+    "Diese Erfahrungen zeigen, wie wichtig Kommunikation und Zusammenarbeit sind, um erfolgreiche Ergebnisse zu erzielen.",
 
     # Lernbereitschaft und Weiterbildung
-    "Ich bin sehr lernbereit und erweitere ständig mein Wissen. Aktuell vertiefe ich meine Kenntnisse in Python und verschiedenen Machine‑Learning‑Bibliotheken wie Pandas, NumPy, Scikit‑learn und Matplotlib. Außerdem nutze ich R und Tableau zur Datenanalyse und bilde mich in Webtechnologien wie JavaScript, HTML und CSS weiter.",
+    "Ich bin sehr lernbereit und erweitere ständig mein Wissen.",
+    "Aktuell vertiefe ich meine Kenntnisse in Python und verschiedenen Machine‑Learning‑Bibliotheken wie Pandas, NumPy, Scikit‑learn und Matplotlib.",
+    "Außerdem nutze ich R und Tableau zur Datenanalyse.",
+    "Ich bilde mich in Webtechnologien wie JavaScript, HTML und CSS weiter.",
 
     # Umgang mit Herausforderungen
-    "Durch eine sechsmonatige Reise durch Indien, Nepal und Indonesien habe ich gelernt, mit ungewohnten Situationen umzugehen und auch unter schwierigen Bedingungen einen kühlen Kopf zu bewahren. Diese Fähigkeit hilft mir, mich schnell in neue Themen einzuarbeiten und Probleme strukturiert zu lösen.",
+    "Durch eine sechsmonatige Reise durch Indien, Nepal und Indonesien habe ich gelernt, mit ungewohnten Situationen umzugehen und auch unter schwierigen Bedingungen einen kühlen Kopf zu bewahren.",
+    "Diese Fähigkeit hilft mir, mich schnell in neue Themen einzuarbeiten und Probleme strukturiert zu lösen.",
 
     # Zukunftsziele
-    "Mein langfristiges Ziel ist es, mich in Business Intelligence und Künstlicher Intelligenz weiterzuentwickeln und datengestützte Strategien zu entwerfen, die Unternehmen helfen, bessere Entscheidungen zu treffen und die Zukunft mitzugestalten.",
+    "Mein langfristiges Ziel ist es, mich in Business Intelligence und Künstlicher Intelligenz weiterzuentwickeln.",
+    "Ich möchte datengestützte Strategien entwerfen, die Unternehmen helfen, bessere Entscheidungen zu treffen und die Zukunft mitzugestalten.",
 
     # Arbeitsweise unter Stress
-    "Ich arbeite strukturiert und organisiere mich auch in stressigen Situationen – diese Fähigkeit habe ich unter anderem in meiner Arbeit als Barkeeper entwickelt. Sie hilft mir, in analytischen Projekten den Überblick zu behalten und effizient zu arbeiten.",
+    "Ich arbeite strukturiert und organisiere mich auch in stressigen Situationen.",
+    "Diese Fähigkeit habe ich unter anderem in meiner Arbeit als Barkeeper entwickelt.",
+    "Sie hilft mir, in analytischen Projekten den Überblick zu behalten und effizient zu arbeiten.",
 
     # Kundenorientierung
-    "Meine Zeit im Service von Anwalt.de hat mir gezeigt, wie wichtig es ist, auf Kunden einzugehen und komplexe Informationen verständlich zu vermitteln. Diese Erfahrung ermöglicht es mir, Ergebnisse aus Datenanalysen klar zu kommunizieren und auf die Bedürfnisse verschiedener Stakeholder einzugehen.",
+    "Meine Zeit im Service von Anwalt.de hat mir gezeigt, wie wichtig es ist, auf Kunden einzugehen und komplexe Informationen verständlich zu vermitteln.",
+    "Diese Erfahrung ermöglicht es mir, Ergebnisse aus Datenanalysen klar zu kommunizieren und auf die Bedürfnisse verschiedener Stakeholder einzugehen.",
 
-        # Zertifikat Data‑Driven Decisions with PowerBI
-    "Jacob hat das Zertifikat „Data‑Driven Decisions with PowerBI“ absolviert und kann damit zeigen, wie man mit PowerBI datenbasierte Entscheidungen unterstützt und aussagekräftige Dashboards erstellt.",
-
-    # Zertifikat Data Analysis with Python
-    "Mit dem Zertifikat „Data Analysis with Python“ hat Jacob seine Kenntnisse in der Datenanalyse mit Python vertieft und kann Daten mit Bibliotheken wie Pandas, NumPy und Matplotlib professionell auswerten.",
-
-    # Zertifikat Databases and SQL for Data Science
+    # Zertifikate
+    "Jacob hat das Zertifikat „Data‑Driven Decisions with PowerBI“ absolviert.",
+    "Damit kann er zeigen, wie man mit PowerBI datenbasierte Entscheidungen unterstützt und aussagekräftige Dashboards erstellt.",
+    "Mit dem Zertifikat „Data Analysis with Python“ hat Jacob seine Kenntnisse in der Datenanalyse mit Python vertieft.",
+    "Er kann Daten mit Bibliotheken wie Pandas, NumPy und Matplotlib professionell auswerten.",
     "Durch das Zertifikat „Databases and SQL for Data Science“ beherrscht Jacob die Grundlagen relationaler Datenbanken und fortgeschrittene SQL‑Abfragen für Data‑Science‑Projekte.",
+    "Als zertifizierter Professional Scrum Master kennt sich Jacob mit agilen Methoden und der Leitung von Scrum‑Teams aus.",
+    "Er kann Entwicklungsprojekte effizient moderieren.",
+    "Das Zertifikat „Mindreading with AI“ zeigt Jacobs Interesse an innovativen KI‑Anwendungen.",
+    "Er hat gelernt, wie künstliche Intelligenz genutzt wird, um emotionale oder kognitive Zustände zu interpretieren.",
 
-    # Zertifikat Professional Scrum Master
-    "Als zertifizierter Professional Scrum Master kennt sich Jacob mit agilen Methoden und der Leitung von Scrum‑Teams aus und kann Entwicklungsprojekte effizient moderieren.",
+    # Hobbys
+    "Zu Jacobs Hobbys gehört das Bauen und Fliegen von FPV‑Drohnen.",
+    "Das Hobby erfordert sowohl Ingenieurwissen als auch Kreativität.",
+    "Jacob wandert gerne und verbringt Zeit in der Natur.",
+    "Wandern bietet ihm einen Ausgleich zum datengetriebenen Arbeitsalltag.",
+    "Eine weitere Freizeitbeschäftigung ist das Erstellen von Webseiten.",
+    "Damit lebt Jacob seine Kenntnisse in HTML, CSS und JavaScript auch privat aus.",
 
-    # Zertifikat Mindreading with AI
-    "Das Zertifikat „Mindreading with AI“ zeigt Jacobs Interesse an innovativen KI‑Anwendungen – er hat gelernt, wie künstliche Intelligenz genutzt wird, um emotionale oder kognitive Zustände zu interpretieren.",
-
-    # Hobby FPV‑Drohnen
-    "Zu Jacobs Hobbys gehört das Bauen und Fliegen von FPV‑Drohnen – ein technisches Hobby, das sowohl Ingenieurwissen als auch Kreativität erfordert.",
-
-    # Hobby Wandern
-    "Jacob wandert gerne und verbringt Zeit in der Natur, was ihm einen Ausgleich zum datengetriebenen Arbeitsalltag bietet.",
-
-    # Hobby Webseiten bauen
-    "Eine weitere Freizeitbeschäftigung ist das Erstellen von Webseiten, womit Jacob seine Kenntnisse in HTML, CSS und JavaScript auch privat auslebt.",
-
-     # Persönliche Angaben und Studienfortschritt
-    "Jacob ist 26 Jahre alt, befindet sich im letzten Semester seines Masterstudiums der Wirtschaftsinformatik und arbeitet nebenbei als Werkstudent im Bereich Business Intelligence bei duagon.",
+    # Persönliche Angaben und Studienfortschritt
+    "Jacob ist 26 Jahre alt.",
+    "Er befindet sich im letzten Semester seines Masterstudiums der Wirtschaftsinformatik.",
+    "Er arbeitet nebenbei als Werkstudent im Bereich Business Intelligence bei duagon.",
 
     # Soft Skills und Arbeitsweise
-    "Er gilt als aufgeschlossener, kommunikativer Mensch, der Verantwortung übernimmt, kreative und lösungsorientierte Vorschläge ins Team einbringt und stets freundlich sowie respektvoll mit Kollegen und Mitmenschen umgeht. Seine Motivation und Begeisterung teilt er gern mit seinem Umfeld.",
+    "Er gilt als aufgeschlossener, kommunikativer Mensch, der Verantwortung übernimmt.",
+    "Er bringt kreative und lösungsorientierte Vorschläge ins Team ein.",
+    "Er geht stets freundlich sowie respektvoll mit Kollegen und Mitmenschen um.",
+    "Seine Motivation und Begeisterung teilt er gern mit seinem Umfeld.",
 
     # Aufbau einer Reporting‑Landschaft
-    "In seiner beruflichen Praxis hat Jacob eine interne Reporting‑Landschaft bei duagon konzipiert und umgesetzt: Er erfasste Anforderungen mit verschiedenen Stakeholdern, beschaffte und bereitete Daten auf und visualisierte sie in Power‑BI‑Dashboards; dabei vertiefte er seine Kenntnisse in Power BI, Python, R und SQL.",
+    "In seiner beruflichen Praxis hat Jacob eine interne Reporting‑Landschaft bei duagon konzipiert und umgesetzt.",
+    "Er erfasste Anforderungen mit verschiedenen Stakeholdern.",
+    "Er beschaffte und bereitete Daten auf.",
+    "Er visualisierte sie in Power‑BI‑Dashboards.",
+    "Dabei vertiefte er seine Kenntnisse in Power BI, Python, R und SQL.",
 
     # Chatbot‑Projekt und Schulungen
-    "Jacob beschäftigt sich intensiv mit Künstlicher Intelligenz und Machine Learning. Er entwickelte einen unternehmensinternen Chatbot, der Fragen zu firmenbezogenen Dokumenten beantwortet, und hält englischsprachige Schulungen zur verantwortungsvollen Nutzung von KI‑Tools im Unternehmen.",
+    "Jacob beschäftigt sich intensiv mit Künstlicher Intelligenz und Machine Learning.",
+    "Er entwickelte einen unternehmensinternen Chatbot, der Fragen zu firmenbezogenen Dokumenten beantwortet.",
+    "Er hält englischsprachige Schulungen zur verantwortungsvollen Nutzung von KI‑Tools im Unternehmen.",
 
     # Akademische Erfolge und Masterarbeit
-    "Das Modul Advanced Data Visualization schloss Jacob mit der Bestnote 1,0 ab. Seine Masterarbeit trägt den Titel „Determinants of Sharing Sensitive Data with AI Tools in the Workplace: A Privacy Calculus Perspective“ und untersucht, welche Faktoren die Preisgabe sensibler Daten bei der Arbeit mit KI‑Tools beeinflussen.",
+    "Das Modul Advanced Data Visualization schloss Jacob mit der Bestnote 1,0 ab.",
+    "Seine Masterarbeit trägt den Titel „Determinants of Sharing Sensitive Data with AI Tools in the Workplace: A Privacy Calculus Perspective“.",
+    "Die Masterarbeit untersucht, welche Faktoren die Preisgabe sensibler Daten bei der Arbeit mit KI‑Tools beeinflussen.",
 
     # Kooperation mit dem MIT
-    "Im Rahmen eines internationalen Projekts entwickelte Jacob gemeinsam mit dem MIT ein KI‑Modell zur Emotionserkennung bei Pferden – ein Beispiel für seine Begeisterung für innovative KI‑Anwendungen.",
+    "Im Rahmen eines internationalen Projekts entwickelte Jacob gemeinsam mit dem MIT ein KI‑Modell zur Emotionserkennung bei Pferden.",
+    "Dieses Projekt ist ein Beispiel für seine Begeisterung für innovative KI‑Anwendungen.",
 ]
 
 # =====================================================
