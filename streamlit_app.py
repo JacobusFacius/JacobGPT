@@ -1,31 +1,24 @@
-
+import streamlit as st
+from sentence_transformers import SentenceTransformer
+import faiss
+import numpy as np
+from groq import Groq
 import re
 from typing import List
-
-import numpy as np
-import faiss
-import streamlit as st
-from groq import Groq
-from sentence_transformers import SentenceTransformer
-import nltk
-from nltk.stem.snowball import GermanStemmer
-
-try:
-    nltk.data.find("tokenizers/punkt")
-except LookupError:
-    nltk.download("punkt")
 
 # =====================================================
 # 1. Vorbereitung
 # =====================================================
 
 groq_api_key = st.secrets["GROQ_API_KEY"]
+
 client = Groq(api_key=groq_api_key)
 
 # Anzahl der finalen Chunks, die an das Modell übergeben werden
-NUM_FINAL_CHUNKS = 3
+NUM_FINAL_CHUNKS = 5
 
 # Wissensbasis: Liste an Textabschnitten über Jacob Facius
+# Diese Chunks wurden aus der offiziellen Website jacob‑facius.de zusammengestellt.
 text_chunks = [
     # Studium und Leidenschaft
     "Jacob Facius studiert Wirtschaftsinformatik im Master an der Otto‑Friedrich‑Universität Bamberg.",
@@ -148,7 +141,7 @@ text_chunks = [
     # Persönliche Angaben und Studienfortschritt
     "Jacob ist 26 Jahre alt.",
     "Er befindet sich im letzten Semester seines Masterstudiums der Wirtschaftsinformatik.",
-    "Er wird das Masterstudium im November 2025 abschließen.",
+    "Er wird das Masterstudiums im November 2025 abschließen",
     "Er arbeitet nebenbei als Werkstudent im Bereich Business Intelligence bei duagon.",
 
     # Soft Skills und Arbeitsweise
@@ -186,7 +179,7 @@ text_chunks = [
 embedding_model_name = "all-MiniLM-L6-v2"
 model = SentenceTransformer(embedding_model_name)
 
-# Embeddings erstellen und normalisieren (wichtig für Cosinus‑Ähnlichkeit)
+# Embeddings erstellen und normalisieren (Wichtig für Cosinus‑Ähnlichkeit)
 embeddings = model.encode(text_chunks, normalize_embeddings=True)
 dimension = embeddings.shape[1]
 
@@ -198,45 +191,26 @@ index.add(embeddings)
 # 3. Hilfsfunktionen
 # =====================================================
 
-stemmer = GermanStemmer()
-
 def keyword_score(chunk: str, query: str) -> int:
-    """Berechnet eine robuste Keyword‑Übereinstimmung basierend auf Wortstämmen."""
+    """Berechnet, wie viele Wörter aus der Anfrage im Chunk vorkommen."""
     query_tokens = re.findall(r"\w+", query.lower())
     chunk_tokens = set(re.findall(r"\w+", chunk.lower()))
-    # Wortstämme generieren, um verschiedene Wortformen abzudecken
-    query_stems = [stemmer.stem(token) for token in query_tokens]
-    chunk_stems = {stemmer.stem(token) for token in chunk_tokens}
-    return sum(1 for stem in query_stems if stem in chunk_stems)
+    return sum(1 for token in query_tokens if token in chunk_tokens)
+
 
 def retrieve_best_chunks(user_query: str, top_candidates: int = 10, final_k: int = 3) -> List[str]:
+    """
+    Ermittelt die Top‑k relevantesten Chunks für die Anfrage.
+
+    Zunächst werden per FAISS die `top_candidates` ähnlichsten Chunks geholt.
+    Anschließend sortieren wir diese anhand der Keyword‑Übereinstimmung und
+    geben die `final_k` besten zurück.
+    """
     query_embedding = model.encode([user_query], normalize_embeddings=True)
     D, I = index.search(np.array(query_embedding), k=top_candidates)
-    # Erstelle Liste aus Kandidaten mit ihren Indizes und Embedding‑Scores
-    candidates = []
-    for rank, idx in enumerate(I[0]):
-        embedding_score = float(D[0][rank])
-        candidates.append((idx, embedding_score))
-    # Gewichtungsfaktor für Keyword‑Übereinstimmung
-    weight_keyword = 0.2
-    ranked = sorted(
-        candidates,
-        key=lambda x: x[1] + weight_keyword * keyword_score(text_chunks[x[0]], user_query),
-        reverse=True
-    )
-    return [text_chunks[idx] for idx, _ in ranked[:final_k]]
-
-def is_answer_supported(answer: str, retrieved_chunks: List[str], threshold: float = 0.5) -> bool:
-    """
-    Prüft, ob die generierte Antwort semantisch durch die bereitgestellten Chunks unterstützt wird.
-    Wenn die Cosinus‑Ähnlichkeit zwischen Antwort und Kontext unter dem Schwellenwert liegt, gilt sie als nicht unterstützt.
-    """
-    if not answer or not retrieved_chunks:
-        return False
-    answer_embedding = model.encode([answer], normalize_embeddings=True)
-    context_embedding = model.encode([" ".join(retrieved_chunks)], normalize_embeddings=True)
-    similarity = float(np.dot(answer_embedding, context_embedding.T))
-    return similarity >= threshold
+    candidates = [text_chunks[i] for i in I[0]]
+    ranked = sorted(candidates, key=lambda c: keyword_score(c, user_query), reverse=True)
+    return ranked[:final_k]
 
 # =====================================================
 # 4. Streamlit‑UI Setup
@@ -264,14 +238,13 @@ if user_input:
         conversation_history += f"{role}: {message['content']}\n"
     prompt = (
         "Du bist JacobGPT – ein virtueller Assistent, der Jacob bei Bewerbungen unterstützt. "
-        "Antworte ausschließlich und wörtlich basierend auf den unten aufgeführten Hintergrundinformationen. "
-        "Wenn du die Frage nicht direkt mithilfe dieser Informationen beantworten kannst, antworte mit 'Nicht gefunden'. "
-        "Füge keine zusätzlichen Details oder Vermutungen hinzu.\n\n"
+        "Antworte präzise und nutze ausschließlich die unten aufgeführten Hintergrundinformationen. "
+        "Sollte keine Information vorhanden sein, antworte mit 'Nicht gefunden'. \n\n"
         "=== Hintergrundinformationen ===\n"
         f"{chr(10).join(retrieved_chunks)}\n\n"
         "=== Gesprächsverlauf ===\n"
         f"{conversation_history}"
-        f"Frage: {user_input}\n"
+        "Frage: {user_input}\n"
         "Antwort:"
     )
     MODEL_NAME = "llama3-70b-8192"
@@ -282,12 +255,11 @@ if user_input:
                 {"role": "user", "content": prompt}
             ],
             model=MODEL_NAME,
-            temperature=0.0,
+            temperature=0.1,
             max_tokens=256
         )
         answer = response.choices[0].message.content.strip()
-        # Überprüfen, ob die Antwort semantisch durch die bereitgestellten Chunks gedeckt ist
-        if not is_answer_supported(answer, retrieved_chunks):
+        if keyword_score(answer, " ".join(retrieved_chunks)) == 0:
             answer = "Nicht gefunden."
     except Exception as e:
         answer = f"Fehler bei der Anfrage an Groq (Modell {MODEL_NAME}): {e}"
