@@ -41,7 +41,7 @@ text_chunks = [
 # Embedding‑Modell wählen. "BAAI/bge-base-en-v1.5" ist ein starkes Modell; für
 # deutsche Daten kann alternativ "BAAI/bge-large-de" genutzt werden (Internet
 # erforderlich).
-embedding_model_name = "BAAI/bge-large-de"
+embedding_model_name = "all-MiniLM-L6-v2"
 model = SentenceTransformer(embedding_model_name)
 
 # Embeddings erstellen und normalisieren (Wichtig für Cosinus‑Ähnlichkeit)
