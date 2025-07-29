@@ -141,6 +141,7 @@ text_chunks = [
     # Persönliche Angaben und Studienfortschritt
     "Jacob ist 26 Jahre alt.",
     "Er befindet sich im letzten Semester seines Masterstudiums der Wirtschaftsinformatik.",
+    "Er wird das Masterstudiums im November 2025 abschließen",
     "Er arbeitet nebenbei als Werkstudent im Bereich Business Intelligence bei duagon.",
 
     # Soft Skills und Arbeitsweise
